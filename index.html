@@ -1,0 +1,76 @@
+<html>
+
+
+    <body>
+        <input id="something1" placeholder="trigger">
+        <input id="something2" placeholder="file name" >
+        <input id="something3" placeholder="file extention">
+
+        <button onclick="workspaceUpdate()">Update Code :)</button>
+
+        <div id="codeDiv"></div>
+
+
+    </body>
+    <script>
+
+
+function workspaceUpdate(event) {
+    var codeDiv = document.getElementById("codeDiv");
+    //the side bar
+
+
+    var codeHolder = document.createElement('pre');
+    //The elements that holds the generated javascript code (From workspace blocks)
+    codeHolder.className = 'prettyprint but-not-that-pretty';
+
+    // var code = document.createTextNode(Blockly["JavaScript"].workspaceToCode(workspace));
+    // codeDiv.replaceChild(codeHolder, codeDiv.lastElementChild);
+    //OLD ^
+
+    //NEW (With supported files)
+
+    //Step 1: Get the different inputs
+    var fileName = document.getElementById('something2').value
+    //File type is the type of file (Ex: .html, .js, .css) As of right now only use .js
+    var fileType = document.getElementById('something3').value
+    var triggerAction = document.getElementById('something1').value
+    //This can be a dropdown of all the different types of triggers from message creation, channel create stuff like that
+     var code = document.createTextNode(Blockly["JavaScript"].workspaceToCode(workspace));
+    //This is the code change "JavaScript" to other supported languages
+
+
+    //=================================== END var's
+
+
+    //Adds the generated code into the codeHolder element.
+
+    var formatted = `
+    //Project File: ${fileName}.${fileType}
+    module.exports = {
+        trigger: '${triggerAction}',
+        
+        async trigger_actions(params) {
+            const { content, author, channel_id } = params;
+
+            ${code}
+        }
+    };
+    
+    `
+
+
+    codeHolder.innerHTML = formatted
+    var final = document.createElement('div')
+    final.appendChild(codeHolder)
+    codeDiv.appendChild(final)
+    //makes the code with colors.
+    prettyPrint();
+    document.getElementById("codeDiv").style.display = "block";
+
+
+
+}
+    </script>
+
+</html>
